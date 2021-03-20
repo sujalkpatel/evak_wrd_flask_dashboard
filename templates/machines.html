@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card d-grid gap-2 col-lg-6 col-xl-6 mx-auto" style="padding: 18px 24px;">
+    <h3>Machines</h3>
+
+    <table class="table table-striped table-hover table-bordered text-start">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Address</th>
+                <th scope="col">Description</th>
+                <th scope="col" class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="machineList">
+        </tbody>
+    </table>
+
+    <script id="machineTemplete" type="text/x-jsrender">
+        ((for machines))
+        <tr>
+            <th scope="row">((:id))</th>
+            <td>((:address))</td>
+            <td>((:description))</td>
+            <td class="text-center">
+                <button type="button" class="btn btn-outline-info" machine-id=((:id)) onclick="EditMachine(this)"><i
+                        class="bi bi-pencil-square"></i>
+                </button>
+                <button type="button" class="btn btn-outline-danger" machine-id=((:id)) machine-address="((:address))" 
+                        onclick="DeleteMachine(this)"><i class="bi bi-trash"></i></button>
+            </td>
+        </tr>
+        ((/for))
+    </script>
+
+    <div class="modal fade" id="machineEditModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit machine</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" id="alertEditMachine" style="display: none;">
+                        An error occured.</div>
+                    <form>
+                        <input class="form-control" type="text" id="machineId" placeholder=" " hidden>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" id="machineAddress" placeholder=" ">
+                            <label for="floatingInput">Machine Address</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" id="machineDescription" placeholder=" ">
+                            <label for="floatingInput">Machine Description</label>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-info" id="btnUpdateMachineModal">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="machineDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-footer">
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-info" id="btnDeleteMachineModal">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="deleteModalLableTemplete" type="text/x-jsrender">
+        ((:msg))
+    </script>
+
+    <button type="button" class="btn btn-outline-primary btn-lg" onclick="AddMachine()"><i
+            class="bi bi-plus"></i>Machine</button>
+
+    <div class="modal fade" id="machineCreateModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalLabel">New machine</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" id="alertMachineExists" style="display: none;">
+                        An error occured.</div>
+                    <form>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" id="machineAddressNew" placeholder=" " required>
+                            <label for="floatingInput">Machine Address</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" id="machineDescriptionNew" placeholder=" " required>
+                            <label for="floatingInput">Machine Description</label>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-info" id="btnAddMachineModal">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type=text/javascript src="{{
+        url_for('static', filename='js/machines.js') }}"></script>
+</div>
+{% endblock %}

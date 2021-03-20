@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card d-grid gap-2 col-lg-6 col-xl-6 mx-auto" style="padding: 18px 24px;">
+    <h3>Elements</h3>
+
+    <table class="table table-striped table-hover table-bordered text-start">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Unit</th>
+                <th scope="col">Min</th>
+                <th scope="col">Max</th>
+                <th scope="col" class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="elementList">
+            <!-- {% for element in elements %}
+            <tr>
+                <th scope="row">{{ element['id'] }}</th>
+                <td>{{ element['name'] }}</td>
+                <td>{{ element['unit'] }}</td>
+                <td class="text-center"><button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
+                        data-bs-target="#elementEditModal" data-bs-element-id="{{ element['id'] }}"
+                        data-bs-element-name="{{ element['name'] }}" data-bs-element-unit="{{ element['unit'] }}"><i
+                            class="bi bi-pencil-square"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+                </td>
+            </tr>
+            {% endfor %} -->
+        </tbody>
+    </table>
+
+    <script id="elementTemplete" type="text/x-jsrender">
+        ((for elements))
+        <tr>
+            <th scope="row">((:id))</th>
+            <td>((:name))</td>
+            <td>((:unit))</td>
+            <td>((:min))</td>
+            <td>((:max))</td>
+            <td class="text-center">
+                <button type="button" class="btn btn-outline-info" element-id=((:id)) onclick="EditElement(this)"><i
+                        class="bi bi-pencil-square"></i>
+                </button>
+                <button type="button" class="btn btn-outline-danger" element-id=((:id)) element-name="((:name))" 
+                        onclick="DeleteElement(this)"><i class="bi bi-trash"></i></button>
+            </td>
+        </tr>
+        ((/for))
+    </script>
+
+    <div class="modal fade" id="elementEditModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit element</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" id="alertEditElement" style="display: none;">
+                        An error occured.</div>
+                    <form>
+                        <input class="form-control" type="text" id="elementId" placeholder=" " hidden>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" id="elementName" placeholder=" ">
+                            <label for="floatingInput">Element Name</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" id="elementUnit" placeholder=" ">
+                            <label for="floatingInput">Element Unit</label>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="elementMin" placeholder=" ">
+                                    <label for="floatingInput">Element Min</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="elementMax" placeholder=" ">
+                                    <label for="floatingInput">Element Max</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-info" id="btnUpdateElementModal">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="elementDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-footer">
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" id="btnDeleteElementModal">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="deleteModalLableTemplete" type="text/x-jsrender">
+        ((:msg))
+    </script>
+
+    <button type="button" class="btn btn-outline-primary btn-lg" onclick="AddElement()"><i
+            class="bi bi-plus"></i>Element</button>
+
+    <div class="modal fade" id="elementCreateModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalLabel">New element</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" id="alertElementExists" style="display: none;">
+                        An error occured.</div>
+                    <form>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" id="elementNameNew" placeholder=" " required>
+                            <label for="floatingInput">Element Name</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" id="elementUnitNew" placeholder=" " required>
+                            <label for="floatingInput">Element Unit</label>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="elementMinNew" placeholder=" " required>
+                                    <label for="floatingInput">Element Min</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="elementMaxNew" placeholder=" " required>
+                                    <label for="floatingInput">Element Max</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-info" id="btnAddElementModal">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type=text/javascript src="{{
+        url_for('static', filename='js/elements.js') }}"></script>
+</div>
+{% endblock %}

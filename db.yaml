@@ -1,0 +1,5 @@
+mysql_host: "localhost"
+mysql_user: "flaskuser"
+# Enter your password in field below
+mysql_password: "1234!@#$Abcd"
+mysql_db: "evak_db"

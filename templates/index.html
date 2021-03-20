@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>
+    Locations
+</h1>
+
+
+<!-- <script>
+    $(function () {
+        // $('#india-map').vectorMap({ map: 'in_mill' });
+        
+    });
+</script> -->
+
+<div class="container-md">
+    <div id="indiaMap" class="container-lg "
+        style="position: relative; width: 80vw; height: 60vh; background-color: white; border: 5px solid white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
+    </div>
+</div>
+
+
+<div class="modal fade" id="getReadingsModal" tabindex="-1" aria-labelledby="getReadingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="getReadingsModalLabel">Element Readings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-end">
+                    <input class="form-control" type="text" placeholder="Search Element" id="searchText"
+                        style="width: 134px;">
+                    <div id="reportrange"
+                        style="background: #fff; cursor: pointer; margin-left: 7px; padding: 5px 10px; border: 1px solid #ccc; width: 300px;">
+                        <i class="bi bi-calendar-range"></i>
+                        <span></span> <i class="bi bi-caret-down"></i>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered text-start" style="margin-top: 14px;">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Element Name</th>
+                            <th scope="col">Value</th>
+                            <th scope="col">Unit</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Latitude</th>
+                            <th scope="col">Longitude</th>
+                            <th scope="col">Water Body</th>
+                        </tr>
+                    </thead>
+                    <tbody id="elementList">
+
+                    </tbody>
+                </table>
+
+                <div class="text-center">
+                    <div class="spinner-border ms-auto" id="spinnerStatus" style="display: none;" role="status"
+                        aria-hidden="true">
+                    </div>
+                </div>
+
+                <div class="row justify-content-between">
+                    <div class="col-6 text-start">
+                        <p id="rowCount"></p>
+                    </div>
+                    <div class="col-6">
+                        <nav aria-label="Table navigation">
+                            <ul class="pagination justify-content-end" id="tablePagination"></ul>
+                        </nav>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script id="elementTemplete" type="text/x-jsrender">
+    ((for elements))
+    <tr ((if valid == "0" ))class="bg-danger text-light"((else valid == "1" ))class="bg-info text-light"((/if))>
+        <th>((:id))</th>
+        <td>((:element_name))</td>
+        <td>((:reading_value))</td>
+        <td>((:unit))</td>
+        <td>((:date))</td>
+        <td>((:time))</td>
+        <td>((:latitude))</td>
+        <td>((:longitude))</td>
+        <td>((:water_body))</td>
+    </tr>
+    ((/for))
+</script>
+
+
+
+
+<script type=text/javascript src="{{
+    url_for('static', filename='js/index.js') }}"></script>
+{% endblock %}

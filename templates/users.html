@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card d-grid gap-2 col-lg-6 col-xl-6 mx-auto" style="padding: 18px 24px;">
+    <h3>Users</h3>
+    <div id="alertUserMain"></div>
+    <table class="table table-striped table-hover table-bordered text-start">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">User</th>
+                <th scope="col">Email</th>
+                <!-- <th scope="col">Admin</th> -->
+                <th scope="col" class="text-center">Action</th>
+                <!-- <th scope="col" class="text-center">Password</th> -->
+                <!-- <th scope="col" class="text-center">Delete</th> -->
+            </tr>
+        </thead>
+        <tbody id="userList">
+        </tbody>
+    </table>
+
+    <div class="row">
+        <div class="col-6 text-start">
+            <p class="text-danger">Admin</p>
+        </div>
+        <div class="col-6 text-end">
+            <button type="button" class="btn btn-outline-primary" onclick="addUser()"><i
+                    class="bi bi-plus"></i>User</button>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="userEditModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit user</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" id="alertEditUser" style="display: none;">
+                        An error occured.</div>
+                    <form>
+                        <input class="form-control" type="text" id="userId" placeholder=" " hidden>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" id="userName" placeholder=" ">
+                            <label for="floatingInput">User</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="email" id="userEmail" placeholder=" ">
+                            <label for="floatingInput">Email</label>
+                        </div>
+                        <div class="form-check form-check-inline mb-3">
+                            <input class="form-check-input" type="checkbox" value="" id="checkAdmin">
+                            <label class="form-check-label" for="checkAdmin">
+                                Admin
+                            </label>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-info" id="btnUpdateUserModal">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="passwordResetModal" tabindex="-1" aria-labelledby="passwordResetModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordResetModalLabel">Reset Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" id="alertPasswordReset" style="display: none;">
+                        An error occured.</div>
+                    <form>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="password" id="resetPassword" placeholder=" " required>
+                            <label for="floatingInput">Password</label>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-warning" id="btnResetPasswordModal">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="userDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" id="alertUserDelete" style="display: none;">
+                        An error occured.</div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" id="btnDeleteUserModal">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="userCreateModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalLabel">New user</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" id="alertUserExists" style="display: none;">
+                        An error occured.</div>
+                    <form>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" id="userNameNew" placeholder=" " required>
+                            <label for="floatingInput">User</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="password" id="userPasswordNew" placeholder=" " required>
+                            <label for="floatingInput">Password</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="email" id="userEmailNew" placeholder=" " required>
+                            <label for="floatingInput">Email</label>
+                        </div>
+                        <div class="form-check form-check-inline mb-3">
+                            <input class="form-check-input" type="checkbox" value="" id="checkAdminNew">
+                            <label class="form-check-label" for="checkAdminNew">
+                                Admin
+                            </label>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-info" id="btnAddUserModal">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type=text/javascript src="{{
+        url_for('static', filename='js/users.js') }}"></script>
+</div>
+{% endblock %}

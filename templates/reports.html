@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>
+    Reports
+</h1>
+<div class="card d-grid gap-2 container-lg" style="padding: 18px 24px;">
+
+    <div class="row">
+        <div class="col d-flex justify-content-start">
+            <select id="selectLocation" class="form-select" style="width: fit-content; ">
+                <option selected disabled>Select Location</option>
+            </select>
+            <select id="selectStation" class="form-select" style="width: fit-content; margin-left: 7px;">
+                <option selected disabled>Select Station</option>
+            </select>
+        </div>
+        <div class="col d-flex justify-content-end">
+            <div id="reportrange"
+                style="background: #fff; cursor: pointer; margin-left: 7px; padding: 5px 10px; border: 1px solid #ccc; width: 160px;">
+                <i class="bi bi-calendar-date"></i>
+                <span></span> <i class="bi bi-caret-down"></i>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="row align-items-center">
+        <div class="col text-center">
+            <img id="imgWrdLogo" src="{{url_for('static', filename='images/WRD.jpg') }}" alt="WRD-logo" width="258"
+                height="185">
+        </div>
+        <div class="col text-end">
+            <div class="text-start" style="line-height: 10px;">
+                <p>Address:</p>
+                <p>GOVERNMENT OF GUJARAT</p>
+                <p>OFFICE OF THE EXECUTIVE ENGINEER</p>
+                <p>WATER RESOURCES INVESTIGATION DIVISION,</p>
+                <p>C-9, MULTISTORYED BUILDING, LAL DARWAJA, AHMEDABAD-380001</p>
+                <p>WRD PHONE (0): 25507098,(P) 25507094, (FAX) 25507098</p>
+            </div>
+        </div>
+    </div>
+
+    <hr> -->
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-5 text-start">
+            <p id="locationName">Name of Subdivision:</p>
+        </div>
+        <div class="col-4 text-start">
+            <p id="stationName">Site Location:</p>
+        </div>
+        <div class="col-3 text-end">
+            <p id="dateSelected">Date:</p>
+        </div>
+    </div>
+    <table class="table  table-hover table-striped table-bordered text-start" id="reportTable">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Parameter</th>
+                <th scope="col">Result</th>
+                <th scope="col">Unit</th>
+                <!-- <th scope="col">Time</th> -->
+                <th scope="col">Latitude</th>
+                <th scope="col">Longitude</th>
+                <th scope="col">Remarks</th>
+            </tr>
+        </thead>
+        <tbody id="elementList">
+
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        <div class="spinner-border ms-auto" id="spinnerStatus" style="display: none;" role="status" aria-hidden="true">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col text-end">
+            <button type="button" class="btn btn-secondary" id="btnGenerateReport" onclick="prepareReport()">Generate
+                Report</button>
+        </div>
+    </div>
+
+
+    <script id="elementTemplete" type="text/x-jsrender">
+        ((for elements))        
+        <tr>
+            <th>((:id))</th>
+            <td>((:element_name))</td>
+            <td>((:reading_value))</td>
+            <td>((:unit))</td>
+            <td>((:latitude))</td>
+            <td>((:longitude))</td>
+            <td></td>            
+        </tr>
+        ((/for))
+    </script>
+
+
+    <script type=text/javascript src="{{
+        url_for('static', filename='js/reports.js') }}"></script>
+</div>
+{% endblock %}

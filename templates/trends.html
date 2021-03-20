@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>
+    Trends
+</h1>
+<div class="container-lg"
+    style=" width: 90vw; height: 75vh; background-color: white; border: 5px solid white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
+    <div class="row" style="margin: 2vh 0 2vh;">
+        <div class="col-7 d-flex justify-content-start">
+            <select id="selectLocation" class="form-select" style="width: fit-content; ">
+                <option selected disabled>Select Location</option>
+            </select>
+            <select id="selectStation" class="form-select" style="width: fit-content; margin-left: 7px;">
+                <option selected disabled>Select Station</option>
+            </select>
+            <select id="selectElement" class="form-select" style="width: fit-content; margin-left: 7px;">
+                <option selected disabled>Select Element</option>
+            </select>
+        </div>
+        <div class="col-5 d-flex justify-content-end">
+            <button type="button" id="btnRangePrev" class="btn"
+                style="margin-right: 5px; border: solid 1px #ccc; background: #fff;">&#171;</button>
+            <div id="reportrange"
+                style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 305px;">
+                <i class="bi bi-calendar-range"></i>&nbsp;
+                <span></span> <i class="bi bi-caret-down-fill"></i>
+            </div>
+            <button type="button" id="btnRangeNext" class="btn"
+                style="margin-left: 5px; border: solid 1px #ccc; background: #fff;">&#187;</button>
+        </div>
+    </div>
+
+
+
+
+    <div id="myChart" class="container-md" style="position: relative; height: 65vh;">
+    </div>
+</div>
+
+<script type=text/javascript src="{{
+    url_for('static', filename='js/trends.js') }}"></script>
+{% endblock %}

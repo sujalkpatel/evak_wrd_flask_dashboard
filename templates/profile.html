@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+    Welcome, {{ name }}!
+</h1>
+<div class="card d-grid gap-2 col-6 mx-auto" style="padding: 18px 24px; max-width: 30rem; margin-top: 24px;">
+    <h4>Change Password</h4>
+    <div id="alertUserMain"></div>
+    <form>
+        <div class="form-floating mb-3">
+            <input class="form-control" type="password" id="currentPassword" placeholder="Current Password">
+            <label for="floatingPassword">Current Password</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input class="form-control" type="password" id="newPassword" placeholder="New Password">
+            <label for="floatingPassword">New Password</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input class="form-control" type="password" id="confirmPassword" placeholder="Confirm Password">
+            <label for="floatingPassword">Confirm Password</label>
+        </div>
+        <button type="button" class="btn btn-outline-primary btn-lg" id="btnUpdatePassword">Update Password</button>
+    </form>
+</div>
+
+<script type=text/javascript src="{{
+    url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}

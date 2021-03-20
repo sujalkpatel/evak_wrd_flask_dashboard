@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>
+    Element Readings
+</h1>
+<div class="card d-grid gap-2 container-lg" style="padding: 18px 24px;">
+    <div class="d-flex justify-content-end">
+        <input class="form-control" type="text" placeholder="Search Element/Location" id="searchText"
+            style="width: 204px;">
+        <div id="reportrange"
+            style="background: #fff; cursor: pointer; margin-left: 7px; padding: 5px 10px; border: 1px solid #ccc; width: 300px;">
+            <i class="bi bi-calendar-range"></i>
+            <span></span> <i class="bi bi-caret-down"></i>
+        </div>
+    </div>
+    <table class="table table-striped table-hover table-bordered text-start">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Element Name</th>
+                <th scope="col">Value</th>
+                <th scope="col">Unit</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+                <th scope="col">Location</th>
+                <th scope="col">Latitude</th>
+                <th scope="col">Longitude</th>
+                <th scope="col">Station</th>
+                <th scope="col">Water Body</th>
+            </tr>
+        </thead>
+        <tbody id="elementList">
+
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        <div class="spinner-border ms-auto" id="spinnerStatus" style="display: none;" role="status" aria-hidden="true">
+        </div>
+    </div>
+
+    <p id="rowCount"></p>
+
+    <div class="row">
+        <div class="col-4 text-start"><label>Show <select class="form-select-sm" id="selectRowsInPage">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> Readings</label>
+        </div>
+        <div class="col-4">
+            <nav aria-label="Table navigation">
+                <ul class="pagination justify-content-center" id="tablePagination"></ul>
+            </nav>
+        </div>
+        <div class="col-4 text-end">
+            <button type="button" class="btn btn-secondary" id="btnExportCSV">Export to CSV</button>
+        </div>
+
+    </div>
+
+
+    <script id="elementTemplete" type="text/x-jsrender">
+        ((for elements))        
+        <tr ((if valid == "0" ))class="bg-danger text-light"((else valid == "1" ))class="bg-info text-light"((/if))>
+            <th>((:id))</th>
+            <td>((:element_name))</td>
+            <td>((:reading_value))</td>
+            <td>((:unit))</td>
+            <td>((:date))</td>
+            <td>((:time))</td>
+            <td>((:location))</td>
+            <td>((:latitude))</td>
+            <td>((:longitude))</td>
+            <td>((:station_id))</td>
+            <td>((:water_body))</td>
+        </tr>
+        ((/for))
+    </script>
+
+
+
+    <script type=text/javascript src="{{
+        url_for('static', filename='js/readings.js') }}"></script>
+</div>
+{% endblock %}
