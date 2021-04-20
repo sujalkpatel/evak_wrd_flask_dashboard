@@ -43,6 +43,18 @@ def index_post():
         if waterBody == '':
             return jsonify({'msg': 'Station(' + station_id + ') is not valid.'}), 400
 
+        reading_time = reading_data['reading_time']
+
+        recordExistsQuery = "select count(*) from evak_db.element_reading where station_id = '" + \
+            station_id + \
+            "' and date(reading_time) = date('" + reading_time + "')"
+        cur.execute(recordExistsQuery)
+
+        result = cur.fetchall()
+
+        if len(result) > 0 and result[0][0] > 0:
+            return jsonify({'msg': 'The readings for the Station(' + station_id + ') for the given date are already present in the system.'}), 400
+
         group_id = 1
 
         groupIdQuery = "select ifnull(max(group_id), 0) from evak_db.element_reading;"
@@ -66,7 +78,6 @@ def index_post():
                     (%s, %s, %s);",
                     (group_id, fileName, imageData))
 
-        reading_time = reading_data['reading_time']
         location = reading_data['location']
         latitude = reading_data['latitude']
         longitude = reading_data['longitude']

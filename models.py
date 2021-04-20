@@ -75,9 +75,9 @@ class User:
     def get_user(userName):
         cursor = mysql.connection.cursor()
 
-        getUserQuery = "select * from user where name = '" + userName + "' limit 1;"
+        getUserQuery = "select * from user where name = %s limit 1;"
         # print(getUserQuery)
-        cursor.execute(getUserQuery)
+        cursor.execute(getUserQuery, (userName,))
 
         result = cursor.fetchall()
 
@@ -97,9 +97,9 @@ class User:
     def get_user_by_id(id):
         cursor = mysql.connection.cursor()
 
-        getUserQuery = "select * from user where id = '" + id + "';"
+        getUserQuery = "select * from user where id = %s;"
         # print(getUserQuery)
-        cursor.execute(getUserQuery)
+        cursor.execute(getUserQuery, (id,))
 
         result = cursor.fetchall()
 
@@ -118,9 +118,8 @@ class User:
     def get_user_by_name_not_id(name, id):
         cursor = mysql.connection.cursor()
 
-        getUserQuery = "select * from user where name='" + \
-            name + "' and id<>'" + id + "';"
-        cursor.execute(getUserQuery)
+        getUserQuery = "select * from user where name=%s and id<>%s;"
+        cursor.execute(getUserQuery, (name, id,))
 
         result = cursor.fetchall()
 
@@ -138,12 +137,11 @@ class User:
     def update_user(id, name, email, admin):
         cursor = mysql.connection.cursor()
 
-        updateUserQuery = "UPDATE user SET name = '" + name + "', \
-                email = '" + email + "', admin = '" + admin + "' \
-                WHERE id = '" + id + "';"
+        updateUserQuery = "UPDATE user SET name = %s, \
+                email = %s, admin = %s WHERE id = %s;"
 
         # print(updateUserQuery)
-        cursor.execute(updateUserQuery)
+        cursor.execute(updateUserQuery, (name, email, admin, id))
 
         mysql.connection.commit()
 
@@ -156,11 +154,10 @@ class User:
     def update_password(id, password):
         cursor = mysql.connection.cursor()
 
-        updateUserQuery = "UPDATE user SET password = '" + generate_password_hash(password) + "' \
-                WHERE id = '" + id + "';"
+        updateUserQuery = "UPDATE user SET password = %s WHERE id = %s;"
 
         # print(updateUserQuery)
-        cursor.execute(updateUserQuery)
+        cursor.execute(updateUserQuery, (generate_password_hash(password), id))
 
         mysql.connection.commit()
 
@@ -173,9 +170,9 @@ class User:
     def delete_user(id):
         cursor = mysql.connection.cursor()
 
-        deleteUserQuery = "DELETE from user where id='" + id + "';"
+        deleteUserQuery = "DELETE from user where id=%s;"
         # print(deleteUserQuery)
-        cursor.execute(deleteUserQuery)
+        cursor.execute(deleteUserQuery, (id,))
 
         mysql.connection.commit()
         cursor.close()
@@ -270,7 +267,8 @@ class Element:
         if len(results) > 0:
             # print(result[0][1])
             for result in results:
-                elements[result[1]] = {'min': result[3], 'max': result[4]}
+                elements[result[1]] = {'min': result[3],
+                                       'max': result[4], 'unit': result[2]}
 
         # print(elements)
         cursor.close()
@@ -293,6 +291,20 @@ class Element:
 
         cursor.close()
         return readings
+
+    @staticmethod
+    def get_element_readings_array(group_id: str) -> list:
+        cursor = mysql.connection.cursor()
+
+        getReadingsQuery = "SELECT element_name, reading_value FROM element_reading where group_id = " + \
+            group_id + " order by id;"
+
+        cursor.execute(getReadingsQuery)
+
+        results = cursor.fetchall()
+        cursor.close()
+
+        return results
 
     @staticmethod
     def get_element_names():
@@ -807,6 +819,55 @@ class Element:
         cursor.close()
 
         return {'msg': 'Record added.'}
+
+    @staticmethod
+    def get_readings_by_date_range(start: str, end: str) -> dict:
+        cursor = mysql.connection.cursor()
+
+        getGroupRecordsQuery = "select distinct group_id, date_format(reading_time, '%Y-%m-%d %H:%i:%s'), \
+                                location, lat, lng, station_id, waterbody_name \
+                                from element_reading where date(reading_time) >= '" + start + "' and \
+                                date(reading_time) <= '" + end + "' order by group_id;"
+
+        # print(getGroupRecordsQuery)
+
+        cursor.execute(getGroupRecordsQuery)
+
+        resultGroupRecords = cursor.fetchall()
+        recordLength = len(resultGroupRecords)
+        dictElements = Element.get_elements_dict()
+        data = []
+
+        for groupRecord in resultGroupRecords:
+            dataObject = {}
+            groupId = groupRecord[0]
+            dataObject['group_id'] = int(groupId)
+            dataObject['reading_time'] = groupRecord[1]
+            dataObject['location'] = groupRecord[2]
+            dataObject['latitude'] = str(groupRecord[3])
+            dataObject['longitude'] = str(groupRecord[4])
+            dataObject['station_id'] = groupRecord[5]
+            dataObject['waterbody_name'] = groupRecord[6]
+
+            elementReadings = []
+
+            listElementReadings = Element.get_element_readings_array(
+                str(groupId))
+
+            for elementReading in listElementReadings:
+                elementObject = {}
+                elementObject['element_name'] = elementReading[0]
+                elementObject['reading_value'] = get_reading_value_status_by_element(
+                    elementReading[0], elementReading[1])
+                elementObject['unit'] = dictElements[elementReading[0]]['unit']
+
+                elementReadings.append(elementObject)
+
+            dataObject['element_readings'] = elementReadings
+
+            data.append(dataObject)
+
+        return {'data': data, 'count': recordLength}
 
 
 class ClientMachine:
