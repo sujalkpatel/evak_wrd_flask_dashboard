@@ -1,36 +1,46 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card d-grid gap-2 col-6 mx-auto" style="padding: 18px 24px; max-width: 30rem;">
-    <h3>Login</h3>
+<h2 class="display-6">Gujarat Mobile Spot Water Quality Observations Reporting System</h2>
+<!-- Background image -->
+<div class="card bg-image image-fluid" style="
+    background-image: url('../static/images/bg_image.png');
+    height: 70vh; opacity: 0.75;
+  ">
+    <!-- Background image -->
+    <div>
+        <div class="card d-grid gap-2 col-6 mx-auto" style="padding: 18px 24px; max-width: 30rem; margin-top: 20vh;">
+            <h3>Login</h3>
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <div class="alert alert-danger" role="alert">
-        {{ messages[0] }}
-    </div>
-    {% endif %}
-    {% endwith %}
-    <form method="POST" action="/login">
-        <div class="form-floating mb-3">
-            <input class="form-control" type="text" name="username" placeholder="Your UserName">
-            <label for="floatingInput">Username</label>
-        </div>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ messages[0] }}
+            </div>
+            {% endif %}
+            {% endwith %}
+            <form method="POST" action="/login">
+                <div class="form-floating mb-3">
+                    <input class="form-control" type="text" name="username" placeholder="Your UserName">
+                    <label for="floatingInput">Username</label>
+                </div>
 
-        <div class="form-floating mb-3">
-            <input class="form-control" type="password" name="password" placeholder="Your Password">
-            <label for="floatingPassword">Password</label>
-        </div>
+                <div class="form-floating mb-3">
+                    <input class="form-control" type="password" name="password" placeholder="Your Password">
+                    <label for="floatingPassword">Password</label>
+                </div>
 
-        <input type="hidden" name="nextPage" value="{{ request.args.get('next', '') }}" />
+                <input type="hidden" name="nextPage" value="{{ request.args.get('next', '') }}" />
 
-        <!-- <div class="field">
+                <!-- <div class="field">
                 <label class="checkbox">
                     <input type="checkbox" name="remember">
                     Remember me
                 </label>
             </div> -->
-        <button type="submit" class="btn btn-outline-primary btn-lg">Login</button>
-    </form>
+                <button type="submit" class="btn btn-outline-primary btn-lg">Login</button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

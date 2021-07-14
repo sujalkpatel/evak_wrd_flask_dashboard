@@ -6,6 +6,7 @@ var currentPage = 1, totalPages = 0, rowsInPage = 10, totalRows = 0, pageButtonW
 
 var infoboxTemplate = '<div id="infoboxText" style="background-color:rgba(255,255,255,0.8); border-style:solid; border-width:1.5px; border-color: #aa2a8f; padding: 10px; border-radius: 7px; width: fit-content;">' +
     '<h5 id="infoboxTitle" style="">{title}</h5> ' +
+    // '<p>{station_id}</p>' +
     '<a id="infoboxDescription" onclick=recordClicked(this) class="reading-link" value="{value}" style="">{description}</a></div>';
 
 var locations;

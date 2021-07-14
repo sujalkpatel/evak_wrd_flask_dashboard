@@ -4,18 +4,21 @@
 <div class="card d-grid gap-2 col-lg-6 col-xl-6 mx-auto" style="padding: 18px 24px;">
     <h3>Machines</h3>
 
-    <table class="table table-striped table-hover table-bordered text-start">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Address</th>
-                <th scope="col">Description</th>
-                <th scope="col" class="text-center">Actions</th>
-            </tr>
-        </thead>
-        <tbody id="machineList">
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered text-start">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Van Number</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="machineList">
+            </tbody>
+        </table>
+    </div>
 
     <script id="machineTemplete" type="text/x-jsrender">
         ((for machines))
@@ -23,11 +26,12 @@
             <th scope="row">((:id))</th>
             <td>((:address))</td>
             <td>((:description))</td>
+            <td>((:van_number))</td>
             <td class="text-center">
-                <button type="button" class="btn btn-outline-info" machine-id=((:id)) onclick="EditMachine(this)"><i
+                <button type="button" class="btn btn-outline-info btn-sm" machine-id=((:id)) onclick="EditMachine(this)"><i
                         class="bi bi-pencil-square"></i>
                 </button>
-                <button type="button" class="btn btn-outline-danger" machine-id=((:id)) machine-address="((:address))" 
+                <button type="button" class="btn btn-outline-danger btn-sm" machine-id=((:id)) machine-address="((:address))" 
                         onclick="DeleteMachine(this)"><i class="bi bi-trash"></i></button>
             </td>
         </tr>
@@ -53,6 +57,10 @@
                         <div class="form-floating mb-3">
                             <input class="form-control" type="text" id="machineDescription" placeholder=" ">
                             <label for="floatingInput">Machine Description</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" id="vanNumber" placeholder=" ">
+                            <label for="floatingInput">Van Number</label>
                         </div>
                         <div class="text-end">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -106,6 +114,10 @@
                         <div class="form-floating mb-3">
                             <input class="form-control" type="text" id="machineDescriptionNew" placeholder=" " required>
                             <label for="floatingInput">Machine Description</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" id="vanNumberNew" placeholder=" ">
+                            <label for="floatingInput">Van Number</label>
                         </div>
                         <div class="text-end">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

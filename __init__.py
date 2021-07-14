@@ -57,6 +57,14 @@ def create_app():
     from .reports import report as report_blueprint
     app.register_blueprint(report_blueprint)
 
+    # blueprint for waterbody app
+    from .waterbody import waterbody as waterbody_blueprint
+    app.register_blueprint(waterbody_blueprint)
+
+    # blueprint for api of app
+    from .api import api as api_blueprint
+    app.register_blueprint(api_blueprint)
+
     from .models import User
 
     @login_manager.user_loader

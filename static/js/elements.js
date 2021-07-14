@@ -10,6 +10,42 @@ elementCreateModal.addEventListener('hide.bs.modal', function (event) {
     CloseCreateModal();
 });
 
+function showSuccessAlert(message) {
+    var alertHtml = "";
+    alertHtml += "<div class='alert alert-success alert-dismissible fade show' role='alert'>";
+    alertHtml += message;
+    alertHtml += "  <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>";
+    alertHtml += "</div>";
+
+    // console.log(alertHtml);
+    $('#alertElementMain').html(alertHtml);
+    $('#alertElementMain').show();
+}
+
+function showWarningAlert(message) {
+    var alertHtml = "";
+    alertHtml += "<div class='alert alert-warning alert-dismissible fade show' role='alert'>";
+    alertHtml += message;
+    alertHtml += "  <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>";
+    alertHtml += "</div>";
+
+    // console.log(alertHtml);
+    $('#alertElementMain').html(alertHtml);
+    $('#alertElementMain').show();
+}
+
+function showDangerAlert(message) {
+    var alertHtml = "";
+    alertHtml += "<div class='alert alert-danger alert-dismissible fade show' role='alert'>";
+    alertHtml += message;
+    alertHtml += "  <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>";
+    alertHtml += "</div>";
+
+    // console.log(alertHtml);
+    $('#alertElementMain').html(alertHtml);
+    $('#alertElementMain').show();
+}
+
 function GetElements() {
     $.ajax({
         url: 'getElement',
@@ -109,6 +145,34 @@ $(function () {
         CloseEditModal();
     });
 });
+
+function UpdateValidation(elementRow) {
+    $('#spinnerStatus').show();
+    elementId = $(elementRow).attr('element-id');
+    var elementName = $(elementRow).attr('element-name');
+    var url = 'api/reading_records_validation_element/';
+    url = url.concat(String(elementId));
+
+    $.ajax({
+        url: url,
+        method: 'PUT',
+        success: function (result) {
+            $('#spinnerStatus').hide();
+            if (!('error' in result)) {
+                showSuccessAlert(
+                    'Validation of ' + String(result.rows_updated) + ' Reading Rows updated for ' + elementName
+                );
+            } else {
+                showDangerAlert(result.error);
+            }
+        },
+        error: function (error) {
+            $('#spinnerStatus').hide();
+            console.log(error);
+            showDangerAlert(String(error));
+        }
+    });
+}
 
 function DeleteElement(elementRow) {
     elementIdToDelete = $(elementRow).attr('element-id');

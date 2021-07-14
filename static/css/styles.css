@@ -1,5 +1,5 @@
 .container-fluid {
-  padding: 2% 5%;
+  padding: 1% 5%;
   /* height: 100%; */
 }
 
@@ -9,12 +9,17 @@
 
 .colored-section {
   background-color: #d3fff6;
+  min-height: 100vh;
   /* color: white; */
 }
 
 .navbar-style {
   /* margin: 10px 0; */
   padding: 5px 10px;
+}
+
+.nav-link {
+  font-size: 1.1rem;
 }
 
 .company-logo-image {

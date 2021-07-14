@@ -14,14 +14,14 @@
 </script> -->
 
 <div class="container-md">
-    <div id="indiaMap" class="container-lg "
-        style="position: relative; width: 80vw; height: 60vh; background-color: white; border: 5px solid white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
+    <div id="indiaMap" class="container-xl container-lg container-md container-sm"
+        style="position: relative; width: 90vw; height: 70vh; background-color: white; border: 5px solid white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
     </div>
 </div>
 
 
 <div class="modal fade" id="getReadingsModal" tabindex="-1" aria-labelledby="getReadingsModalLabel" aria-hidden="true">
-    <div class="modal-dialog  modal-xl">
+    <div class="modal-dialog modal-xl modal-lg modal-fullscreen-lg-down">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="getReadingsModalLabel">Element Readings</h5>
@@ -37,24 +37,27 @@
                         <span></span> <i class="bi bi-caret-down"></i>
                     </div>
                 </div>
-                <table class="table table-striped table-hover table-bordered text-start" style="margin-top: 14px;">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Element Name</th>
-                            <th scope="col">Value</th>
-                            <th scope="col">Unit</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">Latitude</th>
-                            <th scope="col">Longitude</th>
-                            <th scope="col">Water Body</th>
-                        </tr>
-                    </thead>
-                    <tbody id="elementList">
 
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-bordered text-start" style="margin-top: 14px;">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Element Name</th>
+                                <th scope="col">Value</th>
+                                <th scope="col">Unit</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Latitude</th>
+                                <th scope="col">Longitude</th>
+                                <th scope="col">Water Body</th>
+                            </tr>
+                        </thead>
+                        <tbody id="elementList">
+
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="text-center">
                     <div class="spinner-border ms-auto" id="spinnerStatus" style="display: none;" role="status"

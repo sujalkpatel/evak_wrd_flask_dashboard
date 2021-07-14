@@ -54,6 +54,7 @@ function EditMachine(machineRow) {
             console.log(machine)
             $('#machineAddress').val(machine.address);
             $('#machineDescription').val(machine.description);
+            $('#vanNumber').val(machine.van_number);
 
             $('#machineEditModal').modal('show');
         },
@@ -70,7 +71,11 @@ $(function () {
         var url = 'updateMachine/';
         url = url.concat(String(machineId));
         console.log(url);
-        requestData = { address: $('#machineAddress').val(), description: $('#machineDescription').val() };
+        requestData = {
+            address: $('#machineAddress').val(),
+            description: $('#machineDescription').val(),
+            van_number: $('#vanNumber').val()
+        };
 
         $.ajax({
             url: url,
@@ -164,7 +169,11 @@ $(function () {
         $('#alertMachineExists').hide();
         var url = 'addMachine';
         console.log(url);
-        requestData = { address: $('#machineAddressNew').val(), description: $('#machineDescriptionNew').val() };
+        requestData = {
+            address: $('#machineAddressNew').val(),
+            description: $('#machineDescriptionNew').val(),
+            van_number: $('#vanNumberNew').val()
+        };
 
         $.ajax({
             url: url,

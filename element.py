@@ -26,7 +26,10 @@ def index_post():
 
             return jsonify({'msg': 'Not all fields are present.'}), 400
 
-        if ClientMachine.get_machine_by_address(reading_data['MacAddress']) is None:
+        clientMachine = ClientMachine.get_machine_by_address(
+            reading_data['MacAddress'])
+
+        if clientMachine is None:
             return jsonify({'msg': 'Your machine is not authorised.'}), 401
 
         station_id = reading_data['station']
@@ -100,6 +103,17 @@ def index_post():
 
             elif (float(reading_value) != -99) \
                     and (float(reading_value) != -999) \
+                    and element_name != 'ORP' \
+                    and float(dictElements[element_name]['max']) == 0:
+                if float(reading_value) < float(dictElements[element_name]['min']):
+                    if float(reading_value) >= (float(dictElements[element_name]['min']) * 0.75):
+                        valid = 1
+                    else:
+                        valid = 0
+
+            elif (float(reading_value) != -99) \
+                    and (float(reading_value) != -999) \
+                    and element_name != 'ORP' \
                     and (float(reading_value) < float(dictElements[element_name]['min']) or
                          float(reading_value) > float(dictElements[element_name]['max'])):
                 if float(reading_value) >= (float(dictElements[element_name]['min']) * 0.75) and \
@@ -118,12 +132,13 @@ def index_post():
                             lng, \
                             valid, \
                             station_id, \
-                            waterbody_name) \
+                            waterbody_name, \
+                            van_number) \
                             VALUES \
-                            (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);",
+                            (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);",
                         (group_id, reading_time, element_name,
                          reading_value, location, latitude,
-                         longitude, valid, station_id, waterBody))
+                         longitude, valid, station_id, waterBody, clientMachine['van_number']))
 
         mysql.connection.commit()
         rowCount += cur.rowcount
@@ -157,13 +172,17 @@ def index_put(group_id):
         dictReadings = Element.get_element_readings_dict(group_id)
         rowCount = 0
 
+        if not dictReadings:
+            return jsonify({'msg': 'No readings present for the provided group id.'}), 400
+
         for element in reading_data['elements']:
 
             element_name = element['element_name']
             reading_value = element['reading_value']
             valid = 2
 
-            if element_name not in dictElements or float(dictReadings[element_name]) == float(reading_value):
+            if element_name not in dictElements \
+                    or float(dictReadings[element_name]) == float(reading_value):
                 continue
 
             if element_name == 'TOTALCOLIFORM':
@@ -172,6 +191,17 @@ def index_put(group_id):
 
             elif (float(reading_value) != -99) \
                     and (float(reading_value) != -999) \
+                    and element_name != 'ORP' \
+                    and float(dictElements[element_name]['max']) == 0:
+                if float(reading_value) < float(dictElements[element_name]['min']):
+                    if float(reading_value) >= (float(dictElements[element_name]['min']) * 0.75):
+                        valid = 1
+                    else:
+                        valid = 0
+
+            elif (float(reading_value) != -99) \
+                    and (float(reading_value) != -999) \
+                    and element_name != 'ORP' \
                     and (float(reading_value) < float(dictElements[element_name]['min']) or
                          float(reading_value) > float(dictElements[element_name]['max'])):
                 if float(reading_value) >= (float(dictElements[element_name]['min']) * 0.75) and \
@@ -199,12 +229,21 @@ def index_put(group_id):
         return jsonify({'msg': 'An error has occurred while processing the request.', 'errorType': str(type(e).__name__), 'error': str(e)}), 400
 
 
-@element.route('/elements')
+# @element.route('/elements')
+# @login_required
+# def elements():
+#     return render_template('page_403.html')
+#     if not current_user.is_admin():
+#         return render_template('page_403.html')
+#     return render_template('elements.html')
+# <!-- <li><a class="dropdown-item" href="{{ url_for('element.elements') }}">Elements</a></li> -->
+
+@element.route('/reading_groups')
 @login_required
-def elements():
+def reading_groups():
     if not current_user.is_admin():
         return render_template('page_403.html')
-    return render_template('elements.html')
+    return render_template('readingGroups.html')
 
 
 @element.route('/trends')
@@ -357,9 +396,18 @@ def locations_readings():
     return jsonify({"locations": records})
 
 
-@element.route('/getStationsFromReadingsByLocation')
+@element.route('/getStationsFromReadings')
 @login_required
 def stations_readings():
+
+    records = Element.get_stations_readings()
+
+    return jsonify({"stations": records})
+
+
+@element.route('/getStationsFromReadingsByLocation')
+@login_required
+def stations_readings_by_location():
     location = request.args.get('location')
     records = Element.get_stations_readings_by_location(location)
 
@@ -381,3 +429,54 @@ def location_coordinates():
         locationData['location'], locationData['lat'], locationData['lng'])
 
     return jsonify(result)
+
+
+@element.route('/api/reading_groups')
+@login_required
+def api_reading_groups():
+    if not current_user.is_admin():
+        return render_template('page_403.html')
+
+    search = request.args.get('search')
+    offset = request.args.get('offset')
+    limit = request.args.get('limit')
+
+    return jsonify(Element.get_reading_groups(search, offset, limit))
+
+
+@element.route('/api/reading_groups/<id>')
+@login_required
+def api_reading_group_by_id(id: str):
+    if not current_user.is_admin():
+        return render_template('page_403.html')
+
+    return jsonify({'records': Element.get_element_readings_array(id)})
+
+
+@element.route('/api/reading_groups/<id>', methods=['PUT'])
+@login_required
+def api_update_reading_group_by_id(id: str):
+    if not current_user.is_admin():
+        return render_template('page_403.html')
+
+    readingData = request.json
+
+    return Element.update_group_readings(id, readingData['readings'], current_user.name)
+
+
+@element.route('/api/reading_groups/<id>', methods=['DELETE'])
+@login_required
+def api_delete_reading_group_by_id(id: str):
+    if not current_user.is_admin():
+        return render_template('page_403.html')
+
+    return Element.delete_group_readings(id)
+
+
+@element.route('/api/reading_records_validation_element/<id>', methods=['PUT'])
+@login_required
+def api_update_validation_reading_records_element(id: str):
+    if not current_user.is_admin():
+        return render_template('page_403.html')
+
+    return Element.update_validation_of_element_readings(id)

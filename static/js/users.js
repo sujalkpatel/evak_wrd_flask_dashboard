@@ -42,21 +42,24 @@ function renderUserRows(users) {
 
     for (var i = 0; i < users.length; i++) {
         bgColor = "";
-        if (users[i].admin) {
+        if (users[i].admin == 1) {
             bgColor = "class='text-danger'";
+        }
+        if (users[i].admin == 2) {
+            bgColor = "class='text-info'";
         }
         resultHtml += "<tr " + bgColor + ">";
         resultHtml += "    <th scope='row'>" + users[i].id + "</th>";
         resultHtml += "    <td>" + users[i].name + "</td>";
         resultHtml += "    <td>" + users[i].email + "</td>";
         resultHtml += "    <td class='text-center'>";
-        resultHtml += "        <button type='button' class='btn btn-outline-info' user-id=" + users[i].id + " onclick='editUser(this)' ";
+        resultHtml += "        <button type='button' class='btn btn-outline-info btn-sm' user-id=" + users[i].id + " onclick='editUser(this)' ";
         resultHtml += "                data-bs-toggle='tooltip' data-bs-placement='top' title='Edit " + users[i].name + "'><i class='bi bi-pencil-square'></i>";
         resultHtml += "        </button>";
-        resultHtml += "        <button type='button' class='btn btn-outline-warning' user-id=" + users[i].id + " user-name='" + users[i].name + "' ";
+        resultHtml += "        <button type='button' class='btn btn-outline-warning btn-sm' user-id=" + users[i].id + " user-name='" + users[i].name + "' ";
         resultHtml += "                onclick='resetPassword(this)' data-bs-toggle='tooltip' data-bs-placement='top' title='Reset Password for " + users[i].name + "'>";
         resultHtml += "                <i class='bi bi-arrow-clockwise'></i></button>";
-        resultHtml += "        <button type='button' class='btn btn-outline-danger' user-id=" + users[i].id + " user-name='" + users[i].name + "' ";
+        resultHtml += "        <button type='button' class='btn btn-outline-danger btn-sm' user-id=" + users[i].id + " user-name='" + users[i].name + "' ";
         resultHtml += "                onclick='deleteUser(this)' data-bs-toggle='tooltip' data-bs-placement='top' title='Delete " + users[i].name + "'>";
         resultHtml += "                <i class='bi bi-trash'></i></button>";
         resultHtml += "    </td>";

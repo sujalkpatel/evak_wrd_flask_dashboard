@@ -81,20 +81,20 @@ def logout():
     return redirect(url_for('main.index'))
 
 
-@auth.route('/users')
-@fresh_login_required
-def users():
-    if not current_user.is_admin():
-        return render_template('page_403.html')
+# @auth.route('/users')
+# @fresh_login_required
+# def users():
+#     if not current_user.is_root():
+#         return render_template('page_403.html')
 
-    return render_template('users.html')
-
+#     return render_template('users.html')
+# <li><a class="dropdown-item" href="{{ url_for('auth.users') }}">Users</a></li>
 
 @auth.route('/api/user', methods=['GET', 'POST'])
 @login_required
 def user():
-    if not current_user.is_admin():
-        return jsonify({'error': 'Only admins can access this section.'})
+    if not current_user.is_root():
+        return jsonify({'error': 'Only root admins can access this section.'})
 
     if request.method == 'GET':
         users = User.get_users()
@@ -115,8 +115,8 @@ def user():
 @auth.route('/api/user/<id>', methods=['GET', 'PUT', 'DELETE'])
 @login_required
 def user_edit(id):
-    if not current_user.is_admin():
-        return jsonify({'error': 'Only admins can access this section.'})
+    if not current_user.is_root():
+        return jsonify({'error': 'Only root admins can access this section.'})
 
     if request.method == 'GET':
         user = User.get_user_by_id(id)
@@ -149,8 +149,8 @@ def user_edit(id):
 @auth.route('/api/resetPassword/<id>', methods=['POST'])
 @login_required
 def user_reset_password(id):
-    if not current_user.is_admin():
-        return jsonify({'error': 'Only admins can access this section.'})
+    if not current_user.is_root():
+        return jsonify({'error': 'Only root admins can access this section.'})
 
     passwordData = request.form
     result = User.update_password(id, passwordData['password'])

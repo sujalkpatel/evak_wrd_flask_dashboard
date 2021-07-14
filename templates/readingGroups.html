@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card d-grid gap-2 container-lg container-md" style="padding: 18px 24px;">
+    <h3>Reading Groups</h3>
+    <div id="alertGroupMain"></div>
+    <div class="d-flex justify-content-end">
+        <input class="form-control" type="text" placeholder="Search District/Taluka/Water Body" id="searchText"
+            style="width: 272px;">
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered text-start">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Created Time</th>
+                    <th scope="col">Station Id</th>
+                    <th scope="col">Water Body Name</th>
+                    <th scope="col">Van Number</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="groupList">
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center">
+        <div class="spinner-border ms-auto" id="spinnerStatus" style="display: none;" role="status" aria-hidden="true">
+        </div>
+    </div>
+
+    <p id="rowCount"></p>
+
+    <div class="row">
+        <div class="col-4 text-start"><label>Show <select class="form-select-sm" id="selectRowsInPage">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> Reading Groups</label>
+        </div>
+        <div class="col-4">
+            <nav aria-label="Table navigation">
+                <ul class="pagination justify-content-center" id="tablePagination"></ul>
+            </nav>
+        </div>
+    </div>
+
+    <script id="groupTemplate" type="text/x-jsrender">
+        ((for groups))
+        <tr>
+            <th scope="row">((:id))</th>
+            <td>((:time))</td>
+            <td>((:station_id))</td>
+            <td>((:waterbody_name))</td>
+            <td>((:van_number))</td>
+            <td class="text-center">
+                <button type="button" class="btn btn-outline-info btn-sm" group-id=((:id)) onclick="EditGroup(this)"><i
+                        class="bi bi-pencil-square"></i>
+                </button>
+                <button type="button" class="btn btn-outline-danger btn-sm" group-id=((:id)) onclick="DeleteGroup(this)">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>
+        ((/for))
+    </script>
+
+    <div class="modal fade" id="groupEditModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Group</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" id="alertEditGroup" style="display: none;">
+                        An error occured.</div>
+                    <form>
+                        <div id="readingList"></div>
+
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-info" id="btnUpdateGroupModal">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="readingTemplate" type="text/x-jsrender">
+
+        ((for records))
+        ((if #index%2===0))
+            <div class="row g-2">
+        ((/if))
+                <div class="col-md">
+                    <div class="form-floating mb-2">
+                        <input class="form-control" type="text" id="((:~removeSpace(#data[0]) ))" value="((:#data[1] ))">
+                        <label for="floatingInput">((:#data[0]))</label>
+                    </div>
+                </div>
+        ((if #index%2===1))
+            </div>
+        ((/if))
+        ((/for))
+        ((if records.length%2===1))
+            </div>
+        ((/if))
+    </script>
+
+    <div class="modal fade" id="groupDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="alert alert-danger" role="alert" id="alertDeleteGroup" style="display: none;">
+                        An error occured.</div>
+                </div>
+                <div class="modal-footer">
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" id="btnDeleteGroupModal">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="deleteModalLableTemplete" type="text/x-jsrender">
+        ((:msg))
+    </script>
+
+    <script type=text/javascript src="{{
+        url_for('static', filename='js/readingGroups.js') }}"></script>
+</div>
+{% endblock %}
