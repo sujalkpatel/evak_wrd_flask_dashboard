@@ -81,14 +81,14 @@ def logout():
     return redirect(url_for('main.index'))
 
 
-# @auth.route('/users')
-# @fresh_login_required
-# def users():
-#     if not current_user.is_root():
-#         return render_template('page_403.html')
+@auth.route('/users')
+@fresh_login_required
+def users():
+    if not current_user.is_root():
+        return render_template('page_403.html')
 
-#     return render_template('users.html')
-# <li><a class="dropdown-item" href="{{ url_for('auth.users') }}">Users</a></li>
+    return render_template('users.html')
+
 
 @auth.route('/api/user', methods=['GET', 'POST'])
 @login_required

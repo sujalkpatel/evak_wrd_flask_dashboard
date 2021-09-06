@@ -954,6 +954,12 @@ class Element:
             dataObject['station_id'] = groupRecord[5]
             dataObject['waterbody_name'] = groupRecord[6]
 
+            imageData = Element.get_image_by_group_id(groupId)
+            dataObject['image_data'] = imageData['image']
+            dataObject['image_file_name'] = imageData['image_file_name']
+            dataObject['image_width'] = imageData['imageWidth']
+            dataObject['image_height'] = imageData['imageHeight']
+
             elementReadings = []
 
             listElementReadings = Element.get_element_readings_array(
@@ -1015,8 +1021,8 @@ class Element:
                                 any_value(er.lat), any_value(er.lng), any_value(station_id), \
                                 any_value(er.waterbody_name), any_value(district), any_value(taluka), \
                                 any_value(date_format(reading_time, '%%M %%Y')), min(created_time), \
-                                any_value(van_number), any_value(type_of_station) from \
-                                element_reading er, subdivision_master sm \
+                                any_value(van_number), any_value(category) from \
+                                element_reading er, site_master sm \
                                 where station_id = %s and station_id = unique_id \
                                 group by group_id order by group_id;"
 
@@ -1040,7 +1046,7 @@ class Element:
             group['district'] = groupRecord[10]
             group['taluka'] = groupRecord[11]
             group['vanNumber'] = groupRecord[14]
-            group['category'] = get_category_from_station_type(groupRecord[15])
+            group['category'] = groupRecord[15]
 
             group['samplingDate'] = groupRecord[1]
             group['samplingTime'] = groupRecord[2]
@@ -1296,7 +1302,7 @@ class Element:
     def get_stations_records() -> dict:
         cursor = mysql.connection.cursor()
 
-        getStationsQuery = "SELECT *, date_format(modified_time, '%Y-%m-%d %H:%i:%s') FROM subdivision_master"
+        getStationsQuery = "SELECT *, date_format(modified_time, '%Y-%m-%d %H:%i:%s') FROM site_master"
 
         cursor.execute(getStationsQuery)
 
@@ -1311,22 +1317,16 @@ class Element:
 
             stationObject['id'] = stationRecord[0]
             stationObject['unique_id'] = stationRecord[1]
-            stationObject['user_mobile_number'] = stationRecord[2]
-            stationObject['user_name'] = stationRecord[3]
-            stationObject['user_designation'] = stationRecord[4]
-            stationObject['village'] = stationRecord[5]
-            stationObject['taluka'] = stationRecord[6]
-            stationObject['district'] = stationRecord[7]
-            stationObject['waterbody_name'] = stationRecord[8]
-            stationObject['waterbody_type'] = stationRecord[9]
-            stationObject['waterbody_status'] = stationRecord[10]
-            stationObject['user_village'] = stationRecord[11]
-            stationObject['lat'] = str(stationRecord[12])
-            stationObject['lng'] = str(stationRecord[13])
-            stationObject['type_of_monitoring_station'] = stationRecord[14]
-            stationObject['type_of_station'] = stationRecord[15]
-            stationObject['subdivision_name'] = stationRecord[16]
-            stationObject['modified_time'] = stationRecord[18]
+            stationObject['village'] = stationRecord[2]
+            stationObject['taluka'] = stationRecord[3]
+            stationObject['district'] = stationRecord[4]
+            stationObject['waterbody_name'] = stationRecord[5]
+            stationObject['station_name'] = stationRecord[6]
+            stationObject['lat'] = str(stationRecord[7])
+            stationObject['lng'] = str(stationRecord[8])
+            stationObject['category'] = stationRecord[9]
+            stationObject['subdivision_name'] = stationRecord[10]
+            stationObject['modified_time'] = stationRecord[12]
 
             data.append(stationObject)
 
@@ -1336,7 +1336,7 @@ class Element:
     def get_last_modified_time_of_stations() -> dict:
         cursor = mysql.connection.cursor()
 
-        getLastModifiedTimeQuery = "select date_format(max(modified_time), '%Y-%m-%d %H:%i:%s') from subdivision_master"
+        getLastModifiedTimeQuery = "select date_format(max(modified_time), '%Y-%m-%d %H:%i:%s') from site_master"
 
         cursor.execute(getLastModifiedTimeQuery)
 
@@ -1511,12 +1511,12 @@ class WaterBody:
         searchClause = ''
 
         if len(search) > 0:
-            searchClause = "and (waterbody_name like %s \
+            searchClause = "and (station_name like %s \
                             or district like %s \
                             or taluka like %s \
                             or subdivision_name like %s) "
 
-        getWaterBodiesCountQuery = "SELECT count(id) from subdivision_master where 1 = 1 \
+        getWaterBodiesCountQuery = "SELECT count(id) from site_master where 1 = 1 \
                                     " + searchClause + ";"
 
         totalCount = 0
@@ -1531,8 +1531,8 @@ class WaterBody:
             totalCount = results[0][0]
 
         getWaterBodiesRecordsQuery = "select locations.*, count(distinct er.group_id) from \
-                                    (SELECT id, unique_id, waterbody_name, district, taluka, \
-                                    subdivision_name FROM subdivision_master \
+                                    (SELECT id, unique_id, station_name, district, taluka, \
+                                    subdivision_name FROM site_master \
                                     where 1 = 1 " + searchClause + " \
                                     limit " + str(limit) + " offset " + str(offset) + ") \
                                     locations left outer join \

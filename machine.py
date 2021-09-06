@@ -6,13 +6,12 @@ from .models import ClientMachine
 machine = Blueprint('machine', __name__)
 
 
-# @machine.route('/machines')
-# @login_required
-# def machines():
-#     if not current_user.is_root():
-#         return render_template('page_403.html')
-#     return render_template('machines.html')
-# <li><a class="dropdown-item" href="{{ url_for('machine.machines') }}">Machines</a></li>
+@machine.route('/machines')
+@login_required
+def machines():
+    if not current_user.is_root():
+        return render_template('page_403.html')
+    return render_template('machines.html')
 
 
 @machine.route('/getMachine/<id>')

@@ -120,23 +120,24 @@
                             </a>
                         </li>
                         {% endif %}
-                        <!-- {% if current_user.is_authenticated and current_user.is_admin() %}
+                        {% if current_user.is_authenticated and current_user.is_admin() %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 Settings
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" href="{{ url_for('element.elements') }}">Elements</a></li>
                                 <li><a class="dropdown-item" href="{{ url_for('element.reading_groups') }}">Reading
                                         Groups</a></li>
                                 {% if current_user.is_authenticated and current_user.is_root() %}
-                                
-                                
+                                <li><a class="dropdown-item" href="{{ url_for('machine.machines') }}">Machines</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('auth.users') }}">Users</a></li>
                                 {% endif %}
-                                <li><a class="dropdown-item" href="{{ url_for('auth.signup') }}">Sign Up</a></li>
+                                <!-- <li><a class="dropdown-item" href="{{ url_for('auth.signup') }}">Sign Up</a></li> -->
                             </ul>
                         </li>
-                        {% endif %} -->
+                        {% endif %}
                         {% if current_user.is_authenticated %}
                         <li class="nav-item">
                             <a href="{{ url_for('auth.logout') }}" class="nav-link">

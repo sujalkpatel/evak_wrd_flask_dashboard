@@ -35,7 +35,7 @@ def index_post():
         station_id = reading_data['station']
         waterBody = ''
 
-        waterBodyNameQuery = "SELECT waterbody_name FROM subdivision_master where unique_id = '" + station_id + "'"
+        waterBodyNameQuery = "SELECT station_name FROM site_master where unique_id = '" + station_id + "'"
         cur.execute(waterBodyNameQuery)
 
         result = cur.fetchall()
@@ -229,14 +229,13 @@ def index_put(group_id):
         return jsonify({'msg': 'An error has occurred while processing the request.', 'errorType': str(type(e).__name__), 'error': str(e)}), 400
 
 
-# @element.route('/elements')
-# @login_required
-# def elements():
-#     return render_template('page_403.html')
-#     if not current_user.is_admin():
-#         return render_template('page_403.html')
-#     return render_template('elements.html')
-# <!-- <li><a class="dropdown-item" href="{{ url_for('element.elements') }}">Elements</a></li> -->
+@element.route('/elements')
+@login_required
+def elements():
+    if not current_user.is_admin():
+        return render_template('page_403.html')
+    return render_template('elements.html')
+
 
 @element.route('/reading_groups')
 @login_required
